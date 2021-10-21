@@ -1,6 +1,7 @@
 ---
 title: Test node deletion
 ---
+
 ### Case 1: Delete multiple kinds of nodes:
 1. Deploy Longhorn.
 2. Shut down the VM for one node and wait for the node `Down`. Disable another node.
@@ -27,3 +28,14 @@ title: Test node deletion
     4. Crash all replicas of the 3rd volume and trigger the auto salvage. --> The auto salvage should work. The volume works fine and the data is correct after the salvage.
     5. Disabled the auto salvage setting. Then crash all replicas of the 3rd volume again. --> The replica on the deleted node cannot be salvaged manually, too. The salvage feature still works fine.
     6. Deleted the replica on the deleted node for the 4th volume. --> The replica can be deleted.
+
+### Case 3: Delete node when there are running pods
+Related issue: [3149](https://github.com/longhorn/longhorn/issues/3149)
+
+1. Using Rancher v2.6.0 or later to provision an AWS rke2 cluster with 1 etcd/control and 4 worker nodes.
+2. Install Longhorn via Apps & Marketplace with version: 100.1.0+up1.2.2 
+3. Create a workload with following manifest:
+-  ```kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/examples/deployment.yaml```
+4. Check which node the pod is running.
+5. Delete the node from the cluster.
+
